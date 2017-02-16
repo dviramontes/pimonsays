@@ -63,12 +63,12 @@ setInterval(() => {
         const json = JSON.parse(data);
         if (json) {
             const coll = Object.entries(json).map(([key, {favs}]) => [key, favs]);
-            const max = coll.sort((a, b) => {
+            const sorted = coll.sort((a, b) => { // biggest first
                 const [ , countA] = a;
                 const [ , countB] = b;
                 return countB - countA;
             })
-            const [winner, ] = first(max);
+            const [winner, ] = first(sorted);
             console.log(winner);
             // hardware.display(winner);
         }
