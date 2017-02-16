@@ -56,17 +56,21 @@ stream.on('unfavorite', (tweet) => {
 
 setInterval(() => {
     request(`${firebaseEndpoint}/favs.json`, (err, response, data) => {
-        const json = JSON.parse(data);
-        if (json) {
-            const coll = Object.entries(json).map(([key, {favs}]) => [key, favs]);
-            const sorted = coll.sort((a, b) => { // biggest first
-                const [ , countA] = a;
-                const [ , countB] = b;
-                return countB - countA;
-            })
-            const [winner, ] = first(sorted);
-            console.log(winner);
-            hardware.display(winner);
+        try {
+            const json = JSON.parse(data);
+            if (json) {
+                const coll = Object.entries(json).map(([key, {favs}]) => [key, favs]);
+                const sorted = coll.sort((a, b) => { // biggest first
+                    const [ , countA] = a;
+                    const [ , countB] = b;
+                    return countB - countA;
+                })
+                const [winner, ] = first(sorted);
+                console.log(winner);
+                hardware.display(winner);
+            }
+        } catch (e) {
+            console.log(e);
         }
     });
 }, 12000);
