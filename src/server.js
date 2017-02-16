@@ -69,4 +69,4 @@ setInterval(() => {
             hardware.display(winner);
         }
     });
-}, 10000);
+}, 12000);
