@@ -8,8 +8,9 @@ const consumer_secret = process.env.consumer_secret;
 const access_token = process.env.access_token;
 const access_token_secret = process.env.access_token_secret;
 const request = require('request');
-const hardware = require('./hardware');
 const { first } = require('lodash');
+
+import * as hardware from './hardware';
 
 const firebaseEndpoint = 'https://pimonsays.firebaseio.com';
 
@@ -65,7 +66,7 @@ setInterval(() => {
             })
             const [winner, ] = first(sorted);
             console.log(winner);
-            // hardware.display(winner);
+            hardware.display(winner);
         }
     });
 }, 10000);
