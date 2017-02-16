@@ -1,10 +1,12 @@
-const LedMatrix = require("node-rpi-rgb-led-matrix");
-const matrix = new LedMatrix(16);
+const execFile = require('child_process').execFile;
 
-matrix.fill(255, 50, 100);
-matrix.setPixel(0, 0, 0, 50, 255);
+// pi@raspberrypi:~/Documents/rpi-rgb-led-matrix/python/samples $ sudo python newtext.py -r=16 -t="Good Bye Tyler :'("
 
-setTimeout(() => {
-    matrix.fill(155, 50, 100);
-    matrix.setPixel(0, 0, 0, 50, 255);
-}, 2000);
+module.exports.display = (name) => {
+    execFile('python', [`newtext.py -r=16 -t="${name}"`], (error, stdout, stderr) => {
+        if (error) {
+            throw error;
+        }
+        console.log(stdout);
+    });
+}
