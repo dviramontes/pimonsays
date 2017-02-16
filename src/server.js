@@ -10,6 +10,7 @@ const access_token_secret = process.env.access_token_secret;
 const request = require('request');
 const hardware = require('./hardware');
 const { first } = require('lodash');
+
 const firebaseEndpoint = 'https://pimonsays.firebaseio.com';
 
 const T = new Twit({
@@ -32,18 +33,13 @@ function updateFirebaseCount(endpoint, text, favs) {
     }, (error, response, body) => {
         if (error) {
             console.log(error);
-        } else {
-            if (response.statusCode == 200) {
-                console.log(body);
-            }
         }
     });
 }
 
 stream.on('favorite', (tweet) => {
     const {target_object : {favorite_count, text}} = tweet;
-    console.log('favorite_count::', favorite_count);
-    console.log(favorite_count);
+    console.log(`${text} | ${favorite_count}`);
     if (favorite_count) {
         updateFirebaseCount(firebaseEndpoint, text, favorite_count);
     }
@@ -51,8 +47,7 @@ stream.on('favorite', (tweet) => {
 
 stream.on('unfavorite', (tweet) => {
     const {target_object : {favorite_count, text}} = tweet;
-    console.log('unfavorite_count::', favorite_count);
-    console.log(favorite_count);
+    console.log(`${text} | ${favorite_count}`);
     if (favorite_count) {
         updateFirebaseCount(firebaseEndpoint, text, favorite_count);
     }

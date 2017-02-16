@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js --exec 'npm start'"
+    "start": "node build/server",
+    "dev": "nodemon -w src --exec 'npm run build && npm start'",
+    "build": "babel src -d build"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +17,9 @@
     "twit": "^2.2.5"
   },
   "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-preset-es2015": "^6.22.0",
     "nodemon": "^1.11.0"
   }
 }
