@@ -4,12 +4,17 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.js --exec 'npm start'"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^4.0.0",
+    "lodash": "^4.17.4",
+    "request": "^2.79.0",
     "twit": "^2.2.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
