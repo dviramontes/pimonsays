@@ -38,7 +38,7 @@ function updateFirebaseCount(endpoint, text, favs) {
     });
 }
 
-function updateLatestStarTween(endpoint, tweet) {
+function updateLatestStarTweet(endpoint, tweet) {
     request({
         uri: `${endpoint}/star/latest.json`,
         method: 'PUT',
@@ -70,7 +70,7 @@ stream.on('unfavorite', (tweet) => {
 
 stream.on('tweet', (tweet) => {
     const { text } = tweet;
-    updateLatestStarTween(firebaseEndpoint, text);
+    updateLatestStarTweet(firebaseEndpoint, text);
     console.log('incoming-tweet:', text);
     hardware.display(text);
 });
