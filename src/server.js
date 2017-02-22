@@ -38,6 +38,20 @@ function updateFirebaseCount(endpoint, text, favs) {
     });
 }
 
+function updateLatestStarTween(endpoint, tweet) {
+    request({
+        uri: `${endpoint}/star/latest.json`,
+        method: 'PUT',
+        json: {
+            tweet,
+        }
+    }, (error, response, body) => {
+        if (error) {
+            console.log(error);
+        }
+    });
+}
+
 stream.on('favorite', (tweet) => {
     const {target_object : {favorite_count, text}} = tweet;
     console.log(`${text} | ${favorite_count}`);
@@ -54,23 +68,67 @@ stream.on('unfavorite', (tweet) => {
     }
 });
 
-setInterval(() => {
-    request(`${firebaseEndpoint}/favs.json`, (err, response, data) => {
-        try {
-            const json = JSON.parse(data);
-            if (json) {
-                const coll = Object.entries(json).map(([key, {favs}]) => [key, favs]);
-                const sorted = coll.sort((a, b) => { // biggest first
-                    const [ , countA] = a;
-                    const [ , countB] = b;
-                    return countB - countA;
-                })
-                const [winner, ] = first(sorted);
-                console.log(winner);
-                hardware.display(winner);
+stream.on('tweet', (tweet) => {
+    const { text } = tweet;
+    updateLatestStarTween(firebaseEndpoint, text);
+    console.log('incoming-tweet:', text);
+    hardware.display(text);
+});
+
+const tylerNickNameMode = (delay) => {
+    setInterval(() => {
+        request(`${firebaseEndpoint}/favs.json`, (err, response, data) => {
+            try {
+                const json = JSON.parse(data);
+                if (json) {
+                    const coll = Object.entries(json).map(([key, {favs}]) => [key, favs]);
+                    const sorted = coll.sort((a, b) => { // biggest first
+                        const [ , countA] = a;
+                        const [ , countB] = b;
+                        return countB - countA;
+                    })
+                    const [winner, ] = first(sorted);
+                    console.log(winner);
+                    hardware.display(winner);
+                }
+            } catch (e) {
+                console.log(e);
             }
-        } catch (e) {
-            console.log(e);
-        }
-    });
-}, 12000);
+        });
+    }, delay);
+}
+
+const starMode = (delay) => {
+    setInterval(() => {
+        request(`${firebaseEndpoint}/star.json`, (err, response, data) => {
+            try {
+                const json = JSON.parse(data);
+                if (json) {
+                    const { latest: { tweet }} = json;
+                    hardware.display(tweet);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        });
+    }, delay);
+};
+
+const mode = process.env.mode;
+const delay = 12000;
+
+console.log('mode::', mode);
+
+switch (mode) {
+    case 'star': {
+        starMode(delay);
+        break;
+    }
+    case 'tyler-nickname': {
+        tylerNickNameMode(delay);
+        break;
+    }
+    default: {
+        starMode(delay);
+    }
+}
